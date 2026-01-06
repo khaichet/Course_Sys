@@ -9,7 +9,7 @@ export interface CourseProgress {
   courseId: string;
   lessons: LessonProgress[];
   progress: number;
-  status: 'not-started' | 'in-progress' | 'completed';
+  status: 'not-started' | 'in-progress' | 'not-completed' | 'completed';
 }
 
 const STORAGE_KEY = 'courseProgress';
@@ -81,10 +81,14 @@ export const updateLessonStatus = (
   const completedCount = courseProgress.lessons.filter(l => l.status === 'completed').length;
   courseProgress.progress = Math.round((completedCount / courseProgress.lessons.length) * 100);
   
+  // Course status logic:
+  // - not-started: 0% progress (no lessons completed)
+  // - not-completed: 0% < progress < 100% (some but not all lessons completed)
+  // - completed: 100% progress (all lessons completed)
   if (courseProgress.progress === 100) {
     courseProgress.status = 'completed';
   } else if (courseProgress.progress > 0) {
-    courseProgress.status = 'in-progress';
+    courseProgress.status = 'not-completed';
   } else {
     courseProgress.status = 'not-started';
   }

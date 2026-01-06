@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 interface FormErrors {
   email?: string;
@@ -109,7 +110,7 @@ const LoginPage = () => {
             )}
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={!isFormValid || isLoading}
             className={`w-full py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 ${
@@ -128,7 +129,7 @@ const LoginPage = () => {
             ) : (
               "Đăng Nhập"
             )}
-          </button>
+          </Button>
         </form>
 
         {isLoading && (

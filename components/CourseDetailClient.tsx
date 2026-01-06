@@ -6,7 +6,9 @@ import { Course } from "@/lib/types";
 import {
   calculateCourseProgress,
   getCourseLessonStatuses,
+  getCourseProgress,
 } from "@/lib/progressService";
+import { motion } from "framer-motion";
 
 interface CourseDetailClientProps {
   course: Course;
@@ -14,6 +16,9 @@ interface CourseDetailClientProps {
 
 const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
   const [progress, setProgress] = useState(0);
+  const [courseStatus, setCourseStatus] = useState<
+    "not-started" | "in-progress" | "not-completed" | "completed"
+  >("not-started");
   const [lessonStatuses, setLessonStatuses] = useState<
     Record<string, "not-started" | "in-progress" | "completed">
   >({});
@@ -28,6 +33,9 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
       course.totalLessons
     );
     setProgress(courseProgress);
+
+    const courseProgressData = getCourseProgress(course.id);
+    setCourseStatus(courseProgressData?.status || "not-started");
   }, [course.id, course.lessons, course.totalLessons]);
 
   useEffect(() => {
@@ -41,6 +49,9 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
         course.totalLessons
       );
       setProgress(courseProgress);
+
+      const courseProgressData = getCourseProgress(course.id);
+      setCourseStatus(courseProgressData?.status || "not-started");
     };
 
     window.addEventListener("progressUpdated", handleProgressUpdate);
@@ -74,7 +85,7 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
   };
 
   const getStatusBadge = (
-    status: "not-started" | "in-progress" | "completed"
+    status: "not-started" | "in-progress" | "not-completed" | "completed"
   ) => {
     const statusMap: {
       [key: string]: { bg: string; text: string; label: string };
@@ -83,6 +94,11 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
         bg: "bg-gray-100",
         text: "text-gray-800",
         label: "Chưa bắt đầu",
+      },
+      "not-completed": {
+        bg: "bg-orange-100",
+        text: "text-orange-800",
+        label: "Chưa hoàn thành",
       },
       "in-progress": {
         bg: "bg-blue-100",
@@ -133,20 +149,18 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                   >
                     {getLevelLabel(course.level)}
                   </span>
-                  {progress > 0 && (
-                    <span
+                  {courseStatus !== "not-started" && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
                       className={`text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded ${
-                        getStatusBadge(
-                          progress === 100 ? "completed" : "in-progress"
-                        ).bg
-                      } ${
-                        getStatusBadge(
-                          progress === 100 ? "completed" : "in-progress"
-                        ).text
-                      }`}
+                        getStatusBadge(courseStatus).bg
+                      } ${getStatusBadge(courseStatus).text}`}
                     >
-                      {progress === 100 ? "✓ Hoàn thành" : "↻ Đang học"}
-                    </span>
+                      {courseStatus === "completed" && "✓ Hoàn thành"}
+                      {courseStatus === "not-completed" && "◐ Chưa hoàn thành"}
+                    </motion.span>
                   )}
                 </div>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2 break-words">
@@ -181,22 +195,38 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
 
               {course.lessons.length > 0 ? (
                 <div className="space-y-3 sm:space-y-4">
-                  {course.lessons.map((lesson) => {
+                  {course.lessons.map((lesson, index) => {
                     const lessonStatus =
                       lessonStatuses[lesson.id] || "not-started";
                     const isCompleted = lessonStatus === "completed";
+                    const isInProgress = lessonStatus === "in-progress";
                     return (
                       <Link
                         key={lesson.id}
                         href={`/courses/${course.id}/lessons/${lesson.id}`}
                       >
-                        <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md hover:border-blue-300 transition flex gap-3 sm:gap-4 cursor-pointer min-h-[44px] sm:min-h-[48px] justify-start items-start">
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05, duration: 0.3 }}
+                          whileHover={{ x: 4 }}
+                          className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md hover:border-blue-300 transition flex gap-3 sm:gap-4 cursor-pointer min-h-[44px] sm:min-h-[48px] justify-start items-start"
+                        >
                           {/* Lesson Order Circle */}
-                          <div className="flex-shrink-0">
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm sm:text-lg flex-shrink-0 min-h-[44px] sm:min-h-[48px] min-w-[44px] sm:min-w-[48px]">
-                              {lesson.order}
-                            </div>
-                          </div>
+                          <motion.div
+                            animate={{
+                              scale: isCompleted ? 1.1 : 1,
+                              backgroundColor: isCompleted
+                                ? "#10b981"
+                                : isInProgress
+                                ? "#3b82f6"
+                                : "#6b7280",
+                            }}
+                            transition={{ duration: 0.3 }}
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white flex items-center justify-center font-bold text-sm sm:text-lg flex-shrink-0 min-h-[44px] sm:min-h-[48px] min-w-[44px] sm:min-w-[48px]"
+                          >
+                            {isCompleted ? "✓" : lesson.order}
+                          </motion.div>
 
                           {/* Lesson Content */}
                           <div className="flex-1 min-w-0">
@@ -215,17 +245,31 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                                   {lesson.description}
                                 </p>
                               </div>
-                              <div className="flex-shrink-0">
+                              <motion.div
+                                animate={{
+                                  scale: isCompleted || isInProgress ? 1.05 : 1,
+                                }}
+                                transition={{ duration: 0.3 }}
+                                className="flex-shrink-0"
+                              >
                                 {isCompleted ? (
-                                  <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium whitespace-nowrap">
+                                  <motion.span
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium whitespace-nowrap"
+                                  >
                                     ✓ Hoàn thành
+                                  </motion.span>
+                                ) : isInProgress ? (
+                                  <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium whitespace-nowrap">
+                                    ◐ Đang học
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium whitespace-nowrap">
                                     ○ Chưa bắt đầu
                                   </span>
                                 )}
-                              </div>
+                              </motion.div>
                             </div>
 
                             {/* Lesson Duration */}
@@ -238,7 +282,7 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                               )}
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       </Link>
                     );
                   })}
@@ -251,15 +295,12 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
             </section>
           </div>
 
-          {/* Sidebar */}
           <aside className="lg:col-span-1">
-            {/* Course Stats */}
             <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 md:p-8 sticky top-4">
               <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Thông Tin Khóa Học
               </h3>
 
-              {/* Progress */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs sm:text-sm font-medium text-gray-700">
@@ -277,7 +318,6 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                 </div>
               </div>
 
-              {/* Stats Grid */}
               <div className="space-y-3 sm:space-y-4">
                 <div className="border-t border-gray-200 pt-3 sm:pt-4">
                   <div className="text-xs sm:text-sm text-gray-600">
@@ -320,14 +360,23 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                 </div>
               </div>
 
-              {/* CTA Button */}
-              <button className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition min-h-[44px] sm:min-h-[48px] flex items-center justify-center text-sm sm:text-base">
+              <motion.button
+                onClick={() => {
+                  if (course.lessons.length > 0) {
+                    const firstLesson = course.lessons[0];
+                    window.location.href = `/courses/${course.id}/lessons/${firstLesson.id}`;
+                  }
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition min-h-[44px] sm:min-h-[48px] flex items-center justify-center text-sm sm:text-base"
+              >
                 {progress === 100
                   ? "Ôn Tập Khóa Học"
                   : progress > 0
                   ? "Tiếp Tục Học"
                   : "Bắt Đầu Học Ngay"}
-              </button>
+              </motion.button>
             </div>
           </aside>
         </div>

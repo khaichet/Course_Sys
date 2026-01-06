@@ -1,12 +1,56 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Course } from "@/lib/types";
+import { getCourseProgress } from "@/lib/progressService";
+import { motion } from "framer-motion";
 
 interface CourseCardProps {
   course: Course;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
+  const [status, setStatus] = useState<
+    "not-started" | "in-progress" | "not-completed" | "completed"
+  >("not-started");
+
+  useEffect(() => {
+    const courseProgress = getCourseProgress(course.id);
+    setStatus(courseProgress?.status || "not-started");
+
+    const handleProgressUpdate = () => {
+      const updatedProgress = getCourseProgress(course.id);
+      setStatus(updatedProgress?.status || "not-started");
+    };
+
+    window.addEventListener("progressUpdated", handleProgressUpdate);
+    return () =>
+      window.removeEventListener("progressUpdated", handleProgressUpdate);
+  }, [course.id]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-500";
+      case "not-completed":
+        return "bg-orange-500";
+      default:
+        return "bg-gray-400";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "✓ Hoàn thành";
+      case "not-completed":
+        return "◐ Chưa hoàn thành";
+      default:
+        return "○ Chưa bắt đầu";
+    }
+  };
+
   const getLevelColor = (level: string) => {
     switch (level) {
       case "S":
@@ -34,7 +78,13 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
   return (
     <Link href={`/courses/${course.id}`}>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer h-full">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer h-full"
+      >
         {/* Thumbnail */}
         <div
           className="relative w-full bg-gray-200"
@@ -45,6 +95,17 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             alt={course.title}
             className="w-full h-full object-cover"
           />
+          {/* Status Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            className={`absolute top-2 right-2 px-3 py-1 rounded-full text-white text-xs font-semibold ${getStatusColor(
+              status
+            )} shadow-md`}
+          >
+            {getStatusLabel(status)}
+          </motion.div>
         </div>
 
         {/* Content */}
@@ -78,12 +139,16 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             <span className="text-sm text-gray-500">
               📚 {course.totalLessons} bài học
             </span>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium transition">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium transition"
+            >
               Chi tiết
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 };
