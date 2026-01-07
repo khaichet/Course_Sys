@@ -85,7 +85,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         transition={{ duration: 0.3 }}
         className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer h-full"
       >
-        {/* Thumbnail */}
         <div
           className="relative w-full bg-gray-200"
           style={{ aspectRatio: "16/9" }}
@@ -95,7 +94,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             alt={course.title}
             className="w-full h-full object-cover"
           />
-          {/* Status Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -108,9 +106,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           </motion.div>
         </div>
 
-        {/* Content */}
         <div className="p-4 flex flex-col h-full">
-          {/* Kind & Level */}
           <div className="flex justify-between items-center mb-2 gap-2">
             <span className="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded">
               {course.kindOfCourse}
@@ -124,17 +120,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             </span>
           </div>
 
-          {/* Title */}
           <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
             {course.title}
           </h3>
 
-          {/* Description (2 lines truncate) */}
           <p className="text-sm text-gray-600 mb-3 line-clamp-2 flex-grow">
             {course.description}
           </p>
 
-          {/* Lessons Count */}
           <div className="flex items-center justify-between pt-3 border-t border-gray-200">
             <span className="text-sm text-gray-500">
               📚 {course.totalLessons} bài học

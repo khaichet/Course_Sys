@@ -172,12 +172,9 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-          {/* Main Column */}
           <div className="lg:col-span-2 space-y-6 md:space-y-8">
-            {/* Description */}
             <section className="bg-white rounded-lg shadow-md p-4 sm:p-6 md:p-8">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                 Mô Tả Khóa Học
@@ -187,7 +184,6 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
               </p>
             </section>
 
-            {/* Lessons List */}
             <section className="bg-white rounded-lg shadow-md p-4 sm:p-6 md:p-8">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Danh Sách Bài Học ({course.lessons.length})
@@ -212,7 +208,6 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                           whileHover={{ x: 4 }}
                           className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md hover:border-blue-300 transition flex gap-3 sm:gap-4 cursor-pointer min-h-[44px] sm:min-h-[48px] justify-start items-start"
                         >
-                          {/* Lesson Order Circle */}
                           <motion.div
                             animate={{
                               scale: isCompleted ? 1.1 : 1,
@@ -228,7 +223,6 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                             {isCompleted ? "✓" : lesson.order}
                           </motion.div>
 
-                          {/* Lesson Content */}
                           <div className="flex-1 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-2">
                               <div className="flex-1 min-w-0">
@@ -272,7 +266,6 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
                               </motion.div>
                             </div>
 
-                            {/* Lesson Duration */}
                             <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-wrap">
                               <span>⏱️ {lesson.duration} phút</span>
                               {lesson.url && (
