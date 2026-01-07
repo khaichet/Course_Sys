@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Course, Lesson } from "@/lib/types";
 import { updateLessonStatus, getLessonStatus } from "@/lib/progressService";
-import { motion } from "framer-motion";
 
 interface LessonDetailClientProps {
   course: Course;
@@ -25,7 +24,6 @@ const LessonDetailClient: React.FC<LessonDetailClientProps> = ({
   const [isMarking, setIsMarking] = useState(false);
 
   useEffect(() => {
-    // Load saved status from localStorage
     const savedStatus = getLessonStatus(courseId, lesson.id);
     setStatus(savedStatus);
   }, [courseId, lesson.id]);
@@ -33,24 +31,11 @@ const LessonDetailClient: React.FC<LessonDetailClientProps> = ({
   const handleMarkAsCompleted = () => {
     setIsMarking(true);
     try {
-      // Toggle between in-progress and completed
-      if (status === "not-started") {
-        // First click: mark as in-progress
-        updateLessonStatus(courseId, lesson.id, "in-progress");
-        setStatus("in-progress");
-      } else if (status === "in-progress") {
-        // Second click: mark as completed
-        updateLessonStatus(courseId, lesson.id, "completed");
-        setStatus("completed");
-      } else {
-        // If already completed, reset to not-started
-        updateLessonStatus(courseId, lesson.id, "not-started");
-        setStatus("not-started");
-      }
-      // Dispatch event to refresh course progress
+      updateLessonStatus(courseId, lesson.id, "completed");
+      setStatus("completed");
       window.dispatchEvent(new Event("progressUpdated"));
     } catch (error) {
-      console.error("Error updating lesson status:", error);
+      console.error("Error marking lesson as completed:", error);
     } finally {
       setIsMarking(false);
     }
@@ -114,14 +99,10 @@ const LessonDetailClient: React.FC<LessonDetailClientProps> = ({
               className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap flex-shrink-0 ${
                 status === "completed"
                   ? "bg-green-100 text-green-800"
-                  : status === "in-progress"
-                  ? "bg-blue-100 text-blue-800"
                   : "bg-gray-100 text-gray-800"
               }`}
             >
-              {status === "completed" && "✓ Hoàn thành"}
-              {status === "in-progress" && "◐ Đang học"}
-              {status === "not-started" && "○ Chưa bắt đầu"}
+              {status === "completed" ? "✓ Hoàn thành" : "○ Chưa bắt đầu"}
             </div>
           </div>
 
@@ -149,16 +130,10 @@ const LessonDetailClient: React.FC<LessonDetailClientProps> = ({
               <p className="text-gray-600 text-xs sm:text-sm">Trạng thái</p>
               <p
                 className={`font-semibold text-xs sm:text-sm ${
-                  status === "completed"
-                    ? "text-green-600"
-                    : status === "in-progress"
-                    ? "text-blue-600"
-                    : "text-gray-600"
+                  status === "completed" ? "text-green-600" : "text-gray-600"
                 }`}
               >
-                {status === "completed" && "Hoàn thành"}
-                {status === "in-progress" && "Đang học"}
-                {status === "not-started" && "Chưa bắt đầu"}
+                {status === "completed" ? "Hoàn thành" : "Chưa bắt đầu"}
               </p>
             </div>
           </div>
@@ -199,37 +174,30 @@ const LessonDetailClient: React.FC<LessonDetailClientProps> = ({
 
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 mb-6">
           <div className="flex flex-col gap-3 sm:gap-4">
-            <motion.button
-              onClick={handleMarkAsCompleted}
-              whileHover={{ scale: 0.98 }}
-              whileTap={{ scale: 0.95 }}
-              className={`w-full text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition min-h-[44px] sm:min-h-[48px] flex items-center justify-center gap-2 ${
-                status === "completed"
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : status === "in-progress"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-green-500 hover:bg-green-600"
-              }`}
-              disabled={isMarking || status === "completed"}
-            >
-              {isMarking ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-                  ></motion.div>
-                  <span>Đang cập nhật...</span>
-                </>
-              ) : status === "completed" ? (
-                "✓ Đã Hoàn Thành"
-              ) : status === "in-progress" ? (
-                "✓ Đánh Dấu Hoàn Thành"
-              ) : (
-                "◐ Bắt Đầu Học"
-              )}
-            </motion.button>
-
+            {status !== "completed" && (
+              <button
+                onClick={handleMarkAsCompleted}
+                disabled={isMarking}
+                className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition min-h-[44px] sm:min-h-[48px] flex items-center justify-center gap-2"
+              >
+                {isMarking ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Đang cập nhật...</span>
+                  </>
+                ) : (
+                  "✓ Đánh Dấu Đã Hoàn Thành"
+                )}
+              </button>
+            )}
+            {status === "completed" && (
+              <button
+                className="w-full bg-gray-400 cursor-not-allowed text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg min-h-[44px] sm:min-h-[48px] flex items-center justify-center"
+                disabled
+              >
+                ✓ Đã Hoàn Thành
+              </button>
+            )}
             <Link
               href={`/courses/${courseId}`}
               className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 sm:px-6 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition text-center min-h-[44px] sm:min-h-[48px] flex items-center justify-center"

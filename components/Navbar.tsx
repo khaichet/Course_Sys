@@ -48,14 +48,12 @@ const Navbar = () => {
   return (
     <nav className="bg-yellow-600 text-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
-        {/* Logo */}
         <div className="text-xl sm:text-2xl font-bold flex-shrink-0">
           <a href="/" className="hover:text-yellow-100 transition">
-            NextJS App
+            Course App
           </a>
         </div>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center">
           {isAuthenticated ? (
             <div className="flex items-center gap-6">
@@ -87,7 +85,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="md:hidden flex flex-col gap-1 items-end justify-center min-h-[44px] min-w-[44px]"
@@ -111,7 +108,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-yellow-700 px-4 py-4 border-t border-yellow-500">
           {isAuthenticated ? (
