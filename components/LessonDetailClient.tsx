@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Course, Lesson } from "@/lib/types";
 import { updateLessonStatus, getLessonStatus } from "@/lib/progressService";
+import { Button } from "./ui/button";
 
 interface LessonDetailClientProps {
   course: Course;
@@ -74,9 +75,17 @@ const LessonDetailClient: React.FC<LessonDetailClientProps> = ({
               {lesson.title}
             </span>
           </div>
+          {/* <div className="flex items-center justify-between gap-2 mb-3">
+            <Button
+              variant="outline"
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600 font-medium text-xs sm:text-sm transition flex-shrink-0"
+            >
+              ← Quay Lại
+            </Button>
+          </div> */}
         </div>
       </div>
-
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-6">

@@ -2,7 +2,7 @@ import { Course, Lesson } from './types';
 
 const mockLessons: { [key: string]: Lesson[] } = {
   '1': [
-    { id: '1-1', courseId: '1', title: 'Introduction to IELTS', duration: 25, url: 'https://example.com/video1.mp4', description: 'Overview of IELTS exam structure and scoring', status: 'not-started', order: 1 },
+    { id: '1-1', courseId: '1', title: 'Introduction to IELTS', duration: 25, url: 'https://www.youtube.com/watch?v=oafyFIOqtsw', description: 'Overview of IELTS exam structure and scoring', status: 'not-started', order: 1 },
     { id: '1-2', courseId: '1', title: 'Listening Module Overview', duration: 30, url: 'https://example.com/video2.mp4', description: 'Tips and tricks for IELTS listening', status: 'not-started', order: 2 },
     { id: '1-3', courseId: '1', title: 'Reading Strategies', duration: 35, url: 'https://example.com/video3.mp4', description: 'Effective reading techniques', status: 'not-started', order: 3 },
     { id: '1-4', courseId: '1', title: 'Writing Task 1', duration: 40, url: 'https://example.com/video4.mp4', description: 'Describing diagrams and graphs', status: 'not-started', order: 4 },
