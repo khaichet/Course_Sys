@@ -1,5 +1,4 @@
 export const loginUser = async (email: string, password: string) => {
-  // Hardcode credentials
   const validUser = {
     email: "admin@gmail.com",
     password: "123456"
