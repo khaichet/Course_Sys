@@ -142,7 +142,7 @@ const Sidebar = () => {
                       {userEmail.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">
+                      <p className="text-sm font-medium truncate">
                         Demo Student
                       </p>
                       <p className="text-xs text-gray-400">Học viên</p>

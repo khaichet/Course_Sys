@@ -61,7 +61,7 @@ const Navbar = () => {
             <div className="flex items-center gap-6">
               <a
                 href="/courses"
-                className="hover:text-yellow-100 transition font-medium"
+                className="hover:text-blue-800 transition font-medium"
               >
                 Khóa Học
               </a>
@@ -70,26 +70,33 @@ const Navbar = () => {
                   {userEmail}
                 </span>
 
-                <Button
+                <div
+                  className="cursor-pointer"
                   onClick={() => router.push("/profile")}
-                  className="icon-btn rounded-full hover:bg-yellow-600"
                   aria-label="Hồ sơ"
                 >
-                  <User size={20} />
-                </Button>
-                <Button
+                  <User
+                    className="rounded-full border border-green-300 p-2"
+                    size={32}
+                  />
+                </div>
+
+                <div
                   onClick={handleLogout}
-                  className="icon-btn rounded bg-blue-500 hover:bg-blue-600 text-white"
                   aria-label="Đăng xuất"
+                  className="cursor-pointer"
                 >
-                  <LogOut size={20} />
-                </Button>
+                  <LogOut
+                    className="rounded-full border border-blue-500 p-2 text-blue-500"
+                    size={32}
+                  />
+                </div>
               </div>
             </div>
           ) : (
             <Button
               onClick={handleLogin}
-              className=" px-6 py-2 rounded-lg font-medium transition min-h-[44px]"
+              className="px-6 py-2 rounded-lg font-medium transition min-h-[44px]"
             >
               Đăng Nhập
             </Button>
@@ -158,7 +165,7 @@ const Navbar = () => {
                 handleLogin();
                 setIsMobileMenuOpen(false);
               }}
-              className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 min-h-[44px]"
+              className="w-full text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 min-h-[44px]"
             >
               Đăng Nhập
             </button>
