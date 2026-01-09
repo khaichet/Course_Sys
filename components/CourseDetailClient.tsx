@@ -124,7 +124,7 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({ course }) => {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0 bg-opacity-40"></div>
 
         <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
           <Link
