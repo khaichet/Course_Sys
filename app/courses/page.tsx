@@ -19,86 +19,19 @@ const CoursesPage = async ({ searchParams }: CoursesPageProps) => {
     page
   );
 
-  const renderPageNumbers = () => {
-    const pages = [];
-    const maxPagesToShow = 5;
-    let startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-    if (endPage - startPage < maxPagesToShow - 1) {
-      startPage = Math.max(1, endPage - maxPagesToShow + 1);
-    }
-
-    if (startPage > 1) {
-      pages.push(
-        <Link
-          key={1}
-          href="/courses?page=1"
-          className="px-4 py-2 rounded-lg font-medium transition bg-gray-200 text-gray-800 hover:bg-gray-300"
-        >
-          1
-        </Link>
-      );
-      if (startPage > 2) {
-        pages.push(
-          <span key="ellipsis-start" className="px-2 py-2">
-            ...
-          </span>
-        );
-      }
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <Link
-          key={i}
-          href={`/courses?page=${i}`}
-          className={`px-4 py-2 rounded-lg font-medium transition ${
-            page === i
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-          }`}
-        >
-          {i}
-        </Link>
-      );
-    }
-
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        pages.push(
-          <span key="ellipsis-end" className="px-2 py-2">
-            ...
-          </span>
-        );
-      }
-      pages.push(
-        <Link
-          key={totalPages}
-          href={`/courses?page=${totalPages}`}
-          className="px-4 py-2 rounded-lg font-medium transition bg-gray-200 text-gray-800 hover:bg-gray-300"
-        >
-          {totalPages}
-        </Link>
-      );
-    }
-
-    return pages;
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-4 md:mb-6">
+    <div className="min-h-screen bg-gray-50 py-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-2 md:mb-3">
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-1 md:mb-2">
             Danh Sách Khóa Học
           </h1>
 
-          <div className="bg-white rounded-lg shadow p-4 md:p-6 mb-6">
-            <div className="flex flex-col gap-3 md:gap-4">
+          <div className="bg-white rounded-lg shadow p-2 md:p-3 mb-3">
+            <div className="flex flex-col gap-2 md:gap-2">
               <form
                 method="GET"
-                className="flex flex-col lg:flex-row gap-2 md:gap-3"
+                className="flex flex-col lg:flex-row gap-2 md:gap-2"
               >
                 <input
                   type="text"
@@ -156,14 +89,14 @@ const CoursesPage = async ({ searchParams }: CoursesPageProps) => {
 
         {courses.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {courses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
             </div>
 
             {totalPages > 1 && (
-              <div className="flex justify-center gap-1 md:gap-2 flex-wrap mt-6 md:mt-8">
+              <div className="flex justify-center gap-1 md:gap-2 flex-wrap mt-4 md:mt-6">
                 {page > 1 ? (
                   <Link
                     href={`/courses?page=${page - 1}${
@@ -222,7 +155,7 @@ const CoursesPage = async ({ searchParams }: CoursesPageProps) => {
             )}
           </>
         ) : (
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <p className="text-gray-600 text-lg">Không có khóa học nào</p>
           </div>
         )}
@@ -230,5 +163,4 @@ const CoursesPage = async ({ searchParams }: CoursesPageProps) => {
     </div>
   );
 };
-
 export default CoursesPage;

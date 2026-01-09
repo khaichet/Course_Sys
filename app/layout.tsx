@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import LayoutWrapper from "@/components/LayoutWrapper";
+import NavbarWrapper from "@/components/NavbarWrapper";
+import FooterWrapper from "@/components/FooterWrapper";
+import { SidebarProvider } from "@/lib/SidebarContext";
 
 export const metadata: Metadata = {
   title: "NextJS App",
@@ -14,9 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body>
-        <Navbar />
-        {children}
+      <body className="flex flex-col min-h-screen bg-gray-50">
+        <SidebarProvider>
+          <NavbarWrapper />
+          <LayoutWrapper>{children}</LayoutWrapper>
+          <FooterWrapper />
+        </SidebarProvider>
       </body>
     </html>
   );

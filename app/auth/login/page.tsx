@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface FormErrors {
   email?: string;
@@ -60,10 +60,36 @@ const LoginPage = () => {
   const isFormValid =
     email.trim() && password.trim() && !Object.keys(errors).length;
 
+  const fillDemoAccount = () => {
+    setEmail("admin@gmail.com");
+    setPassword("123456");
+    setErrors({});
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
         <h1 className="text-2xl font-bold text-center mb-6">Đăng Nhập</h1>
+
+        {/* Demo Account Info */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800 font-medium mb-2">
+            📝 Tài khoản demo:
+          </p>
+          <p className="text-sm text-blue-700">
+            Email: <span className="font-mono">admin@gmail.com</span>
+          </p>
+          <p className="text-sm text-blue-700 mb-3">
+            Password: <span className="font-mono">123456</span>
+          </p>
+          <button
+            type="button"
+            onClick={fillDemoAccount}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-3 rounded transition"
+          >
+            Tự động điền thông tin demo
+          </button>
+        </div>
 
         {generalError && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
